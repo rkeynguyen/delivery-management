@@ -6,7 +6,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
-
+import ics499.group4.Dao.CustomerDao;
 import ics499.group4.data.entity.Customer;
 
 @PageTitle("Orders")
@@ -14,8 +14,9 @@ import ics499.group4.data.entity.Customer;
 public class OrderView extends VerticalLayout {
 	private static final long serialVersionUID = -9106035027372469135L;
 
-	Grid<Customer> grid = new Grid<>(Customer.class);
-
+	private Grid<Customer> grid = new Grid<>(Customer.class);
+	private CustomerDao customers = new CustomerDao();
+	
 	public OrderView() {
 		Button home = new Button("Home");
 		home.addClickListener(e -> home.getUI().ifPresent(ui -> ui.navigate(HomePage.class)));
@@ -23,13 +24,20 @@ public class OrderView extends VerticalLayout {
 		setSizeFull();
 		configureGrid();	
 		add(home, grid);
+		updateList();
 	}
+
+	
+	private void updateList() {
+		grid.setItems(customers.getAll());
+	}
+
 
 	private void configureGrid() {
 		grid.addClassName("order-grid");
 		grid.setSizeFull();
 		grid.setColumns("firstName", "lastName", "email", "phone");
-		grid.addColumn(customer -> customer.getDeliveryDate().toString()).setHeader("Delivery Date");
+		grid.addColumn(customer -> customer.getFormatedDate()).setHeader("Delivery Date").setSortable(true);
 		grid.getColumns().forEach(col -> col.setAutoWidth(true));
 	}
 }
