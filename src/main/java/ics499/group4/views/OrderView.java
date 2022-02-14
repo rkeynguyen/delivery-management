@@ -7,7 +7,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 import ics499.group4.Dao.CustomerDao;
-import ics499.group4.data.entity.Customer;
+import ics499.group4.data.Customer;
 
 @PageTitle("Orders")
 @Route(value = "orders")

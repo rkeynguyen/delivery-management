@@ -1,4 +1,4 @@
-package ics499.group4.data.entity;
+package ics499.group4.data;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
