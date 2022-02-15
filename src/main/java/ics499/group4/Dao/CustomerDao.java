@@ -15,6 +15,7 @@ public class CustomerDao implements Dao<Customer> {
 		customers.add(new Customer());
 		customers.add(new Customer());
 		customers.add(new Customer());
+		customers.add(new Customer());
 		customers.get(1).setDeliveryDateString("2021-02-20");
 		customers.get(1).setFirstName("Tom");
 	}

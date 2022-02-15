@@ -24,6 +24,7 @@ public class OrderView extends VerticalLayout {
 		setSizeFull();
 		configureGrid();	
 		add(home, grid);
+		
 		updateList();
 	}
 
