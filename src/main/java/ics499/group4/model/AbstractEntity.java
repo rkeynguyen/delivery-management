@@ -1,4 +1,4 @@
-package ics499.group4.data;
+package ics499.group4.model;
 
 import com.vaadin.fusion.Nonnull;
 import javax.persistence.GeneratedValue;

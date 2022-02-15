@@ -2,7 +2,7 @@ package ics499.group4.Dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import ics499.group4.data.Customer;
+import ics499.group4.model.Customer;
 
 public class CustomerDao implements Dao<Customer>{
 	
