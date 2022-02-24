@@ -18,22 +18,25 @@ public class OrderView extends VerticalLayout {
 	private CustomerDao customers = new CustomerDao();
 	
 	public OrderView() {
+		setSizeFull();
+		//button to return to homepage
 		Button home = new Button("Home");
 		home.addClickListener(e -> home.getUI().ifPresent(ui -> ui.navigate(HomePage.class)));
 
-		setSizeFull();
-		configureGrid();	
-		add(home, grid);
-		
+		//setup and update the grid
+		configureGrid();			
 		updateList();
+		
+		add(home, grid);
 	}
 
-	
+	//get all orders and updates the grid
 	private void updateList() {
 		grid.setItems(customers.getAll());
 	}
 
 
+	//Method to set up the columns of the grid
 	private void configureGrid() {
 		grid.addClassName("order-grid");
 		grid.setSizeFull();
