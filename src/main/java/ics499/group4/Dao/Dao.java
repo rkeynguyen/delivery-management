@@ -2,7 +2,7 @@ package ics499.group4.Dao;
 
 import java.util.List;
 
-//methods for accessing customers from database
+//methods for accessing data from database
 public interface Dao<T> {
     
     List<T> getAll();

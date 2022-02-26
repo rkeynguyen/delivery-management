@@ -30,7 +30,7 @@ public class Navbar extends AppLayout {
 		contact.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
 		contact.getStyle().set("font-size", "var(--lumo-font-size-l)").set("color", "black");
 		
-		Button login = new Button("Employee", VaadinIcon.USER.create());
+		Button login = new Button("Employee Login", VaadinIcon.USER.create());
 		login.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
 		login.getStyle().set("font-size", "var(--lumo-font-size-l)").set("color", "black").set("margin-left", "auto");
 		
@@ -38,7 +38,7 @@ public class Navbar extends AppLayout {
 		track.getElement().addEventListener("click", event -> track.getUI().ifPresent(ui -> ui.navigate(CustomerView.class)));
 		   
 		login.getElement().addEventListener("click",
-				event -> login.getUI().ifPresent(ui -> ui.navigate(OrderView.class)));
+				event -> login.getUI().ifPresent(ui -> ui.navigate(LoginView.class)));
 
 		home.getElement().addEventListener("click",
 				event -> home.getUI().ifPresent(ui -> ui.navigate(HomePage.class)));
