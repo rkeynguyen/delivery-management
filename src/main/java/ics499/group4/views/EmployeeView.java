@@ -46,7 +46,7 @@ public class EmployeeView extends VerticalLayout {
 	private void configureGrid() {
 		grid.addClassName("order-grid");
 		grid.setSizeFull();
-		grid.setColumns("firstName", "lastName", "email", "phone");
+		grid.setColumns("trackingNumber", "firstName", "lastName", "email", "phone");
 		grid.addColumn(customer -> customer.getFormatedDate()).setHeader("Delivery Date").setSortable(true);
 		grid.getColumns().forEach(col -> col.setAutoWidth(true));
 	}

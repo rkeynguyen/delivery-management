@@ -6,13 +6,14 @@ import java.time.format.DateTimeFormatter;
 import javax.persistence.Entity;
 
 @Entity
-public class Customer {
+public class Customer extends AbstractEntity{
 
 	private String firstName;
 	private String lastName;
 	private String email;
 	private String phone;
 	private LocalDate deliveryDate;
+	private String trackingNumber;
 
 	public Customer() {
 		firstName = "bob";
@@ -20,6 +21,7 @@ public class Customer {
 		email = "123abc@yahoo.com";
 		phone = "1234567890";
 		deliveryDate = LocalDate.parse("2022-02-14");
+		trackingNumber = "123abc";
 	}
 
 
@@ -53,6 +55,14 @@ public class Customer {
 
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+	
+	public String getTrackingNumber() {
+		return trackingNumber;
+	}
+
+	public void setTrackingNumber(String tracking) {
+		trackingNumber = tracking;
 	}
 
 	public LocalDate getDeliveryDate() {
