@@ -13,7 +13,7 @@ import com.vaadin.flow.router.Route;
 @Route(value = "tracking")
 public class CustomerView extends VerticalLayout {
 	private static final long serialVersionUID = -9218051678695853157L;
-
+	
 	public CustomerView() {
 		// setting up container for page
 		VerticalLayout container = new VerticalLayout();

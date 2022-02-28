@@ -2,7 +2,7 @@ package ics499.group4.Dao;
 
 import java.util.List;
 
-//methods for accessing data from database
+//These objects will be used in other classes to access and manipulate a database
 public interface Dao<T> {
     
     List<T> getAll();

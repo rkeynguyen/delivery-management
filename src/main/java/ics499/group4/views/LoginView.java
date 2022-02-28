@@ -3,7 +3,6 @@ package ics499.group4.views;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.login.LoginOverlay;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.router.Route;
 
 @Route("login")
@@ -13,6 +12,7 @@ public class LoginView extends Composite<LoginOverlay> {
 
 	
 	public LoginView() {
+		
 		//setting up login form
 		LoginOverlay loginForm = getContent();
 		loginForm.setTitle("Employee Login");

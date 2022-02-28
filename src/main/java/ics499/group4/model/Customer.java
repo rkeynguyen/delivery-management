@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 import javax.persistence.Entity;
 
 @Entity
-public class Customer extends AbstractEntity {
+public class Customer {
 
 	private String firstName;
 	private String lastName;
