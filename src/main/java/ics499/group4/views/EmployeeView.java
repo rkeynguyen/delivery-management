@@ -7,7 +7,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
-import ics499.group4.Dao.CustomerDao;
+import ics499.group4.Dao.Dao;
 import ics499.group4.model.Customer;
 
 @PageTitle("Orders")
@@ -16,7 +16,7 @@ public class EmployeeView extends VerticalLayout {
 	private static final long serialVersionUID = -9106035027372469135L;
 
 	private Grid<Customer> grid = new Grid<>(Customer.class);
-	private CustomerDao customers = new CustomerDao();
+	private Dao customers = new Dao();
 	
 	public EmployeeView() {
 		setSizeFull();
@@ -36,7 +36,7 @@ public class EmployeeView extends VerticalLayout {
 
 	//get all orders and updates the grid
 	private void updateList() {
-		grid.setItems(customers.getAll());
+		grid.setItems(customers.getAllCustomers());
 	}
 	
 	//todo Make an updatelist that takes in parameter to grab specific items

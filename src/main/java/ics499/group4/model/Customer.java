@@ -3,17 +3,15 @@ package ics499.group4.model;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import javax.persistence.Entity;
+public class Customer {
 
-@Entity
-public class Customer extends AbstractEntity{
-
+	private String trackingNumber;
 	private String firstName;
 	private String lastName;
 	private String email;
 	private String phone;
 	private LocalDate deliveryDate;
-	private String trackingNumber;
+
 
 	public Customer() {
 		firstName = "bob";
