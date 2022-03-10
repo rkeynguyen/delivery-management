@@ -12,7 +12,6 @@ public class LoginView extends Composite<LoginOverlay> {
 
 	
 	public LoginView() {
-		
 		//setting up login form
 		LoginOverlay loginForm = getContent();
 		loginForm.setTitle("Employee Login");

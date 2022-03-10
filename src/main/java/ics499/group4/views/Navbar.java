@@ -53,6 +53,8 @@ public class Navbar extends AppLayout {
 
 		//adding components to navbar
 		addToNavbar(false, navLayout);
+		
+		
 
 	}
 }
