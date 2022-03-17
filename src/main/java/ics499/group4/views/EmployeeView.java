@@ -51,16 +51,16 @@ public class EmployeeView extends VerticalLayout {
 
 		//handler for searching
 		dataView.addFilter(order -> {
-		    String searchTerm = searchField.getValue().trim();
+		    String searchTerm = searchField.getValue().trim().toUpperCase();
 
 		    if (searchTerm.isEmpty())
 		        return true;
 		    
-		    boolean matchesTracking = order.getTrackingNumber().startsWith(searchTerm);
-		    boolean matchesFirstName = order.getFirstName().startsWith(searchTerm);
-		    boolean matchesLastName = order.getLastName().startsWith(searchTerm);
-		    boolean matchesEmail = order.getEmail().startsWith(searchTerm);
-		    boolean matchesPhone = order.getPhone().startsWith(searchTerm);
+		    boolean matchesTracking = order.getTrackingNumber().toUpperCase().startsWith(searchTerm);
+		    boolean matchesFirstName = order.getFirstName().toUpperCase().startsWith(searchTerm);
+		    boolean matchesLastName = order.getLastName().toUpperCase().startsWith(searchTerm);
+		    boolean matchesEmail = order.getEmail().toUpperCase().startsWith(searchTerm);
+		    boolean matchesPhone = order.getPhone().toUpperCase().startsWith(searchTerm);
 
 		    return matchesFirstName || matchesLastName || matchesTracking || matchesEmail || matchesPhone;
 		});

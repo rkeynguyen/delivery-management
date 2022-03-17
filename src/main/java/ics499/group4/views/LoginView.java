@@ -1,32 +1,42 @@
 package ics499.group4.views;
 
-import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.login.LoginOverlay;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.login.LoginForm;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 
 @Route("login")
-public class LoginView extends Composite<LoginOverlay> {
+public class LoginView extends HorizontalLayout {
 
 	private static final long serialVersionUID = -7149276873646934463L;
 
-	
 	public LoginView() {
-		//setting up login form
-		LoginOverlay loginForm = getContent();
-		loginForm.setTitle("Employee Login");
-		loginForm.setDescription("Username: admin | Password: 0");
-		loginForm.setOpened(true);
+		setSizeFull();
 		
-		//creating a login event handler
+		VerticalLayout vl = new VerticalLayout();
+		vl.getStyle().set("background", "#4254ad").set("margin", "0");
+
+		// setting up title
+		H1 title = new H1("Delivery Management System");
+		title.getStyle().set("color", "white");
+		vl.add(title);
+		
+		LoginForm loginForm = new LoginForm();
+		loginForm.setForgotPasswordButtonVisible(false);
+		
+		// creating a login event handler
 		loginForm.addLoginListener(event -> {
-			if("admin".equals(event.getUsername())) {
+			if ("admin".equals(event.getUsername())) {
 				UI.getCurrent().navigate(EmployeeView.class);
-			}else {
+			} else {
 				loginForm.setError(true);
 			}
-			
 		});
+		
+		add(vl, loginForm);
+
 	}
 
 }
