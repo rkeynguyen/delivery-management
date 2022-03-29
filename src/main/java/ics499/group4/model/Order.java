@@ -1,14 +1,13 @@
 package ics499.group4.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Order {
 
     private String trackingNumber;
     private Customer customer;
-    private LocalDate arrivalTime;
-    private LocalDate appointmentDate;
-    private LocalDate deliveryDate;
+    private LocalDateTime appointmentDate;
+    private LocalDateTime deliveredDate;
     private String deliverySignature;
     private String orderStatus;
     private int agentID;
@@ -18,8 +17,8 @@ public class Order {
     }
 
     //implement logic for incorrect dates, such as dates in the future
-    public boolean enterProofOfDelivery(LocalDate date, String signature) {
-        this.deliveryDate = date;
+    public boolean enterProofOfDelivery(LocalDateTime date, String signature) {
+        this.deliveredDate = date;
         this.deliverySignature = signature;
         return true;
     }
@@ -32,16 +31,12 @@ public class Order {
         return customer;
     }
 
-    public LocalDate getArrivalTime() {
-        return arrivalTime;
-    }
-
-    public LocalDate getAppointmentDate() {
+    public LocalDateTime getAppointmentDate() {
         return appointmentDate;
     }
 
-    public LocalDate getDeliveryDate() {
-        return deliveryDate;
+    public LocalDateTime getDeliveryDate() {
+        return deliveredDate;
     }
 
     public String getDeliverySignature() {
@@ -64,16 +59,12 @@ public class Order {
         this.customer = customer;
     }
 
-    public void setArrivalTime(LocalDate arrivalTime) {
-        this.arrivalTime = arrivalTime;
-    }
-
-    public void setAppointmentDate(LocalDate appointmentDate) {
+    public void setAppointmentDate(LocalDateTime appointmentDate) {
         this.appointmentDate = appointmentDate;
     }
 
-    public void setDeliveryDate(LocalDate deliveryDate) {
-        this.deliveryDate = deliveryDate;
+    public void setDeliveryDate(LocalDateTime deliveryDate) {
+        this.deliveredDate = deliveryDate;
     }
 
     public void setDeliverySignature(String deliverySignature) {
