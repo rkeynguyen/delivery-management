@@ -18,16 +18,10 @@ public class CustomerView extends VerticalLayout {
 	public CustomerView() {
 		setSizeFull();
 		setPadding(false);
+		setSpacing(false);
 		
-		// setting up header for title
-		VerticalLayout header = new VerticalLayout();
-		header.getStyle().set("background", "#2f2645").set("margin", "0");
-
-		// setting up title
-		H1 title = new H1("Delivery Tracking");
-		title.getStyle().set("color", "white");
-		header.add(new Navbar(), title);
-
+		//setting up header
+		Header header = new Header("Delivery Tracking");
 		
 		// Tracking Label
 		H1 tracking = new H1("Track Packages");
@@ -69,7 +63,8 @@ public class CustomerView extends VerticalLayout {
 		VerticalLayout trackingContent = new VerticalLayout();
 		trackingContent.add(tracking, hl, trackingInfo, deliveryInfo, buttons);
 		trackingContent.setSizeFull();
-		
+
 		add(header, trackingContent, new Footer());
+		
 	}
 }
