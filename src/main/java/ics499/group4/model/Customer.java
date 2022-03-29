@@ -5,7 +5,6 @@ import java.time.format.DateTimeFormatter;
 
 public class Customer {
 
-	private String trackingNumber;
 	private String firstName;
 	private String lastName;
 	private String email;
@@ -19,7 +18,6 @@ public class Customer {
 		email = "123abc@yahoo.com";
 		phone = "1234567890";
 		deliveryDate = LocalDate.parse("2022-02-14");
-		trackingNumber = "123abc";
 	}
 
 
@@ -53,14 +51,6 @@ public class Customer {
 
 	public void setPhone(String phone) {
 		this.phone = phone;
-	}
-	
-	public String getTrackingNumber() {
-		return trackingNumber;
-	}
-
-	public void setTrackingNumber(String tracking) {
-		trackingNumber = tracking;
 	}
 
 	public LocalDate getDeliveryDate() {
