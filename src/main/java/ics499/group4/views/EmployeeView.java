@@ -2,6 +2,7 @@ package ics499.group4.views;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.dataview.GridListDataView;
 import com.vaadin.flow.component.grid.editor.Editor;
@@ -9,26 +10,24 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 import ics499.group4.Dao.Dao;
-import ics499.group4.model.Customer;
+import ics499.group4.model.Order;
 
 @PageTitle("Orders")
 @Route(value = "orders")
 public class EmployeeView extends VerticalLayout {
 	private static final long serialVersionUID = -9106035027372469135L;
 
-	private Grid<Customer> grid = new Grid<>(Customer.class, false);
-	private Dao customers = new Dao();
+	private Grid<Order> grid = new Grid<>(Order.class, false);
+	private Dao dao = new Dao();
 	private TextField searchField = new TextField();
-	private Editor<Customer> editor;
+	private Editor<Order> editor;
 
 	public EmployeeView() {
 		setSizeFull();
@@ -43,7 +42,7 @@ public class EmployeeView extends VerticalLayout {
 		configureGrid();
 
 		// data view of grid
-		GridListDataView<Customer> dataView = grid.setItems(customers.getAllCustomers());
+		GridListDataView<Order> dataView = grid.setItems(dao.getAllOrders());
 
 		// setting up the search field
 		searchField = new TextField();
@@ -61,12 +60,12 @@ public class EmployeeView extends VerticalLayout {
 				return true;
 
 			boolean matchesTracking = order.getTrackingNumber().toUpperCase().startsWith(searchTerm);
-			boolean matchesFirstName = order.getFirstName().toUpperCase().startsWith(searchTerm);
-			boolean matchesLastName = order.getLastName().toUpperCase().startsWith(searchTerm);
-			boolean matchesEmail = order.getEmail().toUpperCase().startsWith(searchTerm);
-			boolean matchesPhone = order.getPhone().toUpperCase().startsWith(searchTerm);
+			boolean matchesFirstName = order.getCustomer().getFirstName().toUpperCase().startsWith(searchTerm);
+			boolean matchesLastName = order.getCustomer().getLastName().toUpperCase().startsWith(searchTerm);
+			boolean matchesEmail = order.getCustomer().getEmail().toUpperCase().startsWith(searchTerm);
+			//boolean matchesPhone = order.getCustomer().getPhone().toUpperCase().startsWith(searchTerm);
 
-			return matchesFirstName || matchesLastName || matchesTracking || matchesEmail || matchesPhone;
+			return matchesFirstName || matchesLastName || matchesTracking || matchesEmail; //matchesPhone 
 		});
 
 		add(title, searchField, grid);
@@ -74,58 +73,72 @@ public class EmployeeView extends VerticalLayout {
 
 	// Method to set up the grid
 	private void configureGrid() {
+		
 		editor = grid.getEditor();
 		
 		//adding columns
-		grid.addColumn(Customer::getTrackingNumber).setHeader("Tracking Number");
-		Grid.Column<Customer> firstNameColumn = grid.addColumn(Customer::getFirstName).setHeader("First name");
-		Grid.Column<Customer> lastNameColumn = grid.addColumn(Customer::getLastName).setHeader("Last name");
-		Grid.Column<Customer> emailColumn = grid.addColumn(Customer::getEmail).setHeader("Email");
-		Grid.Column<Customer> phoneColumn = grid.addColumn(Customer::getPhone).setHeader("Phone Number");
+		Grid.Column<Order> trackingColumn = grid.addColumn(Order::getTrackingNumber).setHeader("Tracking Number");
+		Grid.Column<Order> nameColumn = grid.addColumn(order -> order.getCustomer()).setHeader("Name");
+		Grid.Column<Order> phoneColumn = grid.addColumn(order -> order.getCustomer().getPhone()).setHeader("Phone");
+		//Grid.Column<Order> emailColumn = grid.addColumn(order -> order.getCustomer().getEmail()).setHeader("Email");
+		Grid.Column<Order> appointmentColumn = grid.addColumn(Order::getAppointmentDate).setHeader("Appointment Date");
+		Grid.Column<Order> deliverySignitureColumn = grid.addColumn(Order::getDeliverySignature).setHeader("Delivery Signature");
+		Grid.Column<Order> statusColumn = grid.addColumn(Order::getOrderStatus).setHeader("Order Status");
+		Grid.Column<Order> deliveredColumn = grid.addColumn(Order::getDeliveryDate).setHeader("Delivery Date");
+		
+		trackingColumn.setAutoWidth(true);
+		phoneColumn.setAutoWidth(true);
+		deliverySignitureColumn.setAutoWidth(true);
+		appointmentColumn.setWidth("18%");
+		   
+		
 		
 		//column for edit button and handling
-		Grid.Column<Customer> editColumn = grid.addComponentColumn(person -> {
+		Grid.Column<Order> editColumn = grid.addComponentColumn(person -> {
 			Button editButton = new Button("Edit");
 			editButton.addClickListener(e -> {
 				if (editor.isOpen())
 					editor.cancel();
 				grid.getEditor().editItem(person);
+
 			});
 			return editButton;
 		});
-		grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
 		//adding editable textfields for columns, and buttons for editing
-		Binder<Customer> binder = new Binder<>(Customer.class);
+		Binder<Order> binder = new Binder<>(Order.class);
 		editor.setBinder(binder);
 		editor.setBuffered(true);
 
-		TextField firstNameField = new TextField();
-		firstNameField.setWidthFull();
-		binder.forField(firstNameField).asRequired().bind(Customer::getFirstName, Customer::setFirstName);
-		firstNameColumn.setEditorComponent(firstNameField);
+		DateTimePicker appointmentField = new DateTimePicker();
+		appointmentField.setWidthFull();
+		binder.forField(appointmentField).asRequired().bind(Order::getAppointmentDate, Order::setAppointmentDate);
+		appointmentColumn.setEditorComponent(appointmentField);
 
-		TextField lastNameField = new TextField();
-		lastNameField.setWidthFull();
-		binder.forField(lastNameField).asRequired().bind(Customer::getLastName, Customer::setLastName);
-		lastNameColumn.setEditorComponent(lastNameField);
+		TextField deliverySignitureField = new TextField();
+		deliverySignitureField.setWidthFull();
+		binder.forField(deliverySignitureField).asRequired().bind(Order::getDeliverySignature, Order::setDeliverySignature);
+		deliverySignitureColumn.setEditorComponent(deliverySignitureField);
 
-		EmailField emailField = new EmailField();
-		emailField.setWidthFull();
-		binder.forField(emailField).asRequired().withValidator(new EmailValidator("Please enter a valid email address"))
-				.bind(Customer::getEmail, Customer::setEmail);
-		emailColumn.setEditorComponent(emailField);
-
-		TextField phoneField = new TextField();
-		firstNameField.setWidthFull();
-		binder.forField(phoneField).asRequired().bind(Customer::getPhone, Customer::setPhone);
-		phoneColumn.setEditorComponent(phoneField);
-
+		TextField orderStatusField = new TextField();
+		orderStatusField.setWidthFull();
+		binder.forField(orderStatusField).asRequired().bind(Order::getOrderStatus, Order::setOrderStatus);
+		statusColumn.setEditorComponent(orderStatusField);
+		
+		/*
+		DateTimePicker deliveredField = new DateTimePicker();
+		deliveredField.setWidthFull();
+		binder.forField(deliveredField).asRequired().bind(Order::getDeliveryDate, Order::setDeliveryDate);
+		deliveredColumn.setEditorComponent(deliveredField);
+		 */
+		
 		Button saveButton = new Button("Save", e -> editor.save());
 		Button cancelButton = new Button(VaadinIcon.CLOSE.create(), e -> editor.cancel());
 		cancelButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_ERROR);
 		HorizontalLayout actions = new HorizontalLayout(saveButton, cancelButton);
 		actions.setPadding(false);
 		editColumn.setEditorComponent(actions);
+		editColumn.setWidth("10%");
+		
 	}
 }

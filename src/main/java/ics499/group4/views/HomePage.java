@@ -23,7 +23,7 @@ public class HomePage extends VerticalLayout {
 		mainContent.setPadding(false);
 		
 		//setting up header
-		Header header = new Header("Delivery Management System");
+		Header header = new Header("Welcome to the Delivery Management System!");
 		
 		//setting up content
 		VerticalLayout content = new VerticalLayout();

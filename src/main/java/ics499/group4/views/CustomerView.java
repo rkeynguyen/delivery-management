@@ -1,6 +1,7 @@
 package ics499.group4.views;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -36,7 +37,7 @@ public class CustomerView extends VerticalLayout {
 		// show tracking info if button is clicked
 		H2 trackingInfo = new H2();
 		H2 deliveryInfo = new H2();
-		Button cancelButton = new Button("Cancel");
+		Button cancelButton = new Button("Cancel Order");
 		Button rescheduleButton = new Button("Reschedule");
 		
 		cancelButton.setVisible(false);
@@ -45,7 +46,7 @@ public class CustomerView extends VerticalLayout {
 		trackButton.getElement().addEventListener("click",
 				event -> {					
 					trackingInfo.setText("Tracking Number: " + trackingNumber.getValue());
-					deliveryInfo.setText("Expected Delivery mm/dd/yyyy at hh:mm");
+					deliveryInfo.setText("Expected Delivery: ");
 					cancelButton.setVisible(true);
 					rescheduleButton.setVisible(true);
 				});
@@ -56,8 +57,32 @@ public class CustomerView extends VerticalLayout {
 		hl.add(trackingNumber, zipCode, trackButton);
 		hl.setSizeFull();
 		
-		//container for buttons
-		HorizontalLayout buttons = new HorizontalLayout(cancelButton, rescheduleButton);
+		//setting up rescheduling
+		DateTimePicker rescheduleField = new DateTimePicker();
+		rescheduleField.setVisible(false);
+		
+		Button submitReschedule = new Button("Reschedule");
+		submitReschedule.setVisible(false);
+		
+		rescheduleButton.getElement().addEventListener("click",
+				event -> {					
+					rescheduleField.setVisible(true);
+					submitReschedule.setVisible(true);
+					cancelButton.setVisible(false);
+					rescheduleButton.setVisible(false);
+				});
+		
+		submitReschedule.getElement().addEventListener("click",
+				event -> {					
+					rescheduleField.setVisible(false);
+					submitReschedule.setVisible(false);
+					cancelButton.setVisible(true);
+					rescheduleButton.setVisible(true);
+					deliveryInfo.setText("Expected Delivery: " + rescheduleField.getValue());
+				});
+		
+		//container for buttons and input fields
+		HorizontalLayout buttons = new HorizontalLayout(cancelButton, rescheduleButton, rescheduleField, submitReschedule);
 
 		// Container for tracking form
 		VerticalLayout trackingContent = new VerticalLayout();
