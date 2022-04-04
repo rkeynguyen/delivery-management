@@ -4,6 +4,9 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.H4;
+import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -35,8 +38,8 @@ public class CustomerView extends VerticalLayout {
 		Button trackButton = new Button("Track");
 
 		// show tracking info if button is clicked
-		H2 trackingInfo = new H2();
-		H2 deliveryInfo = new H2();
+		H3 trackingInfo = new H3();
+		H3 deliveryInfo = new H3();
 		Button cancelButton = new Button("Cancel Order");
 		Button rescheduleButton = new Button("Reschedule");
 		
@@ -44,7 +47,8 @@ public class CustomerView extends VerticalLayout {
 		rescheduleButton.setVisible(false);
 		
 		trackButton.getElement().addEventListener("click",
-				event -> {					
+				event -> {
+					//Order = customerController.getOrder(tracking, zip);
 					trackingInfo.setText("Tracking Number: " + trackingNumber.getValue());
 					deliveryInfo.setText("Expected Delivery: ");
 					cancelButton.setVisible(true);
@@ -55,7 +59,7 @@ public class CustomerView extends VerticalLayout {
 		HorizontalLayout hl = new HorizontalLayout();
 		hl.setAlignItems(FlexComponent.Alignment.BASELINE);
 		hl.add(trackingNumber, zipCode, trackButton);
-		hl.setSizeFull();
+		hl.setWidthFull();
 		
 		//setting up rescheduling
 		DateTimePicker rescheduleField = new DateTimePicker();
@@ -78,6 +82,7 @@ public class CustomerView extends VerticalLayout {
 					submitReschedule.setVisible(false);
 					cancelButton.setVisible(true);
 					rescheduleButton.setVisible(true);
+					//customerController.setAppointdate(rescheduleField.getValue());
 					deliveryInfo.setText("Expected Delivery: " + rescheduleField.getValue());
 				});
 		

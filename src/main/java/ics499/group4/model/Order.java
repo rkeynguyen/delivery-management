@@ -13,7 +13,7 @@ public class Order {
     private int agentID;
 
     public Order() {
-
+    	orderStatus = "ALT";
     }
 
     //implement logic for incorrect dates, such as dates in the future
