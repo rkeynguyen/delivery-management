@@ -6,6 +6,7 @@ import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
+import ics499.group4.controller.EmployeeController;
 
 @Route("login")
 public class LoginView extends HorizontalLayout {
@@ -28,9 +29,9 @@ public class LoginView extends HorizontalLayout {
 		
 		// creating a login event handler
 		loginForm.addLoginListener(event -> {
-			if ("admin".equals(event.getUsername())) {
+			if (EmployeeController.instanceOf().handleLoginRequest(event.getUsername(), event.getPassword())) {
 				UI.getCurrent().navigate(EmployeeView.class);
-			} else {
+			} else { //error is password does not match username found in db
 				loginForm.setError(true);
 			}
 		});

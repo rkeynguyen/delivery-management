@@ -1,10 +1,19 @@
 package ics499.group4.test;
 
+import ics499.group4.controller.EmployeeController;
 import ics499.group4.model.Customer;
 
 import static org.junit.Assert.*;
 
 public class Test {
+
+	@org.junit.Test
+	public void testLogin() {
+
+		assertTrue(EmployeeController.instanceOf().handleLoginRequest("John1", "test"));
+
+	}
+
 
 	@org.junit.Test
 	public void exampleTest() {
