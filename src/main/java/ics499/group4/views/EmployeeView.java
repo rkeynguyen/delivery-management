@@ -2,6 +2,7 @@ package ics499.group4.views;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.dataview.GridListDataView;
@@ -10,7 +11,6 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.value.ValueChangeMode;
@@ -119,25 +119,24 @@ public class EmployeeView extends VerticalLayout {
 
 		DateTimePicker appointmentField = new DateTimePicker();
 		appointmentField.setWidthFull();
-		binder.forField(appointmentField).asRequired().bind(Order::getAppointmentDate, Order::setAppointmentDate);
+		binder.forField(appointmentField).bind(Order::getAppointmentDate, Order::setAppointmentDate);
 		appointmentColumn.setEditorComponent(appointmentField);
 
 		TextField deliverySignitureField = new TextField();
 		deliverySignitureField.setWidthFull();
-		binder.forField(deliverySignitureField).asRequired().bind(Order::getDeliverySignature, Order::setDeliverySignature);
+		binder.forField(deliverySignitureField).bind(Order::getDeliverySignature, Order::setDeliverySignature);
 		deliverySignitureColumn.setEditorComponent(deliverySignitureField);
 
 		//order status drop down
-		Select<String> select = new Select<>();
+	    ComboBox<String> select = new ComboBox<>();	    
 		select.setItems("ATL", "OH","APC","APT","DAC","OFD","DEL","REF");
-		select.setValue("ATL");
 		binder.forField(select).bind(Order::getOrderStatus, Order::setOrderStatus);
 		statusColumn.setEditorComponent(select);
 		
 		
 		DateTimePicker deliveredField = new DateTimePicker();
 		deliveredField.setWidthFull();
-		binder.forField(deliveredField).asRequired().bind(Order::getDeliveryDate, Order::setDeliveryDate);
+		binder.forField(deliveredField).bind(Order::getDeliveryDate, Order::setDeliveryDate);
 		deliveredColumn.setEditorComponent(deliveredField);
 		 
 		
