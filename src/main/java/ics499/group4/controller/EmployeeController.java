@@ -26,15 +26,12 @@ public class EmployeeController extends ConnectionController {
         return instance;
     }
 
-    //returns int due to multiple possible reasons a login request is not valid
-    //0 - login request accepted
-    //1 - username not found in db
-    //2 - username found but password does not match
+
     public boolean handleLoginRequest(String username, String password) {
         String query = "select delivery_agent_id " +
                        "from delivery_agent " +
                        "where username =\"" + username + "\" " +
-                       "and password =\"" + password + "\";";
+                       "and password = BINARY \"" + password + "\";";
         try {
             Connection cn = super.getConnection();
             Statement st = cn.createStatement();
