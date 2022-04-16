@@ -17,7 +17,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
-import ics499.group4.Dao.Dao;
+import ics499.group4.controller.EmployeeController;
 import ics499.group4.model.Order;
 
 @PageTitle("Orders")
@@ -26,7 +26,6 @@ public class EmployeeView extends VerticalLayout {
 	private static final long serialVersionUID = -9106035027372469135L;
 
 	private Grid<Order> grid = new Grid<>(Order.class, false);
-	private Dao dao = new Dao();
 	private TextField searchField = new TextField();
 	private Editor<Order> editor;
 
@@ -42,7 +41,10 @@ public class EmployeeView extends VerticalLayout {
 		Button logout = new Button("Logout");
 		
 		//add logout function to controller
-		logout.addClickListener(e -> title.getUI().ifPresent(ui -> ui.navigate(HomePage.class)));
+		logout.addClickListener(e -> {
+			EmployeeController.instanceOf().logout();
+			title.getUI().ifPresent(ui -> ui.navigate(HomePage.class));
+			});
 		
 		header.add(title, logout);
 
@@ -50,7 +52,7 @@ public class EmployeeView extends VerticalLayout {
 		configureGrid();
 
 		// data view of grid
-		GridListDataView<Order> dataView = grid.setItems(dao.getAllOrders());
+		GridListDataView<Order> dataView = grid.setItems(EmployeeController.instanceOf().getOrders());
 
 		// setting up the search field
 		searchField = new TextField();
