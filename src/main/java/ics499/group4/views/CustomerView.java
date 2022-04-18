@@ -135,6 +135,7 @@ public class CustomerView extends VerticalLayout {
 			hl.setVisible(false);
 			tracking.setText("Order Canceled");
 		});
+		
 		// Container for tracking form
 		VerticalLayout trackingContent = new VerticalLayout();
 		trackingContent.add(tracking, hl, trackingInfo, deliveryInfo, buttons);
