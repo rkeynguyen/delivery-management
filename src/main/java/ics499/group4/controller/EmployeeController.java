@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.sql.ResultSet;
 
 public class EmployeeController extends ConnectionController {
@@ -23,6 +24,21 @@ public class EmployeeController extends ConnectionController {
 			instance = new EmployeeController();
 		}
 		return instance;
+	}
+
+	public void logout() {
+		agentId = -1;
+	}
+
+	public int getAgentId() {
+		return agentId;
+	}
+
+	public boolean isLoggedIn() {
+		if (agentId == -1)
+			return false;
+		else
+			return true;
 	}
 
 	public boolean handleLoginRequest(String username, String password) {
@@ -44,20 +60,12 @@ public class EmployeeController extends ConnectionController {
 		}
 	}
 
-	public void logout() {
-		agentId = -1;
-	}
-
-	public int getAgentId() {
-		return agentId;
-	}
-
+	// using the agentId retrieve the corresponding customer from database
 	public ArrayList<Order> getOrders() {
-		int count = 0;
 		if (agentId == -1) {
 			return null;
 		} else {
-			String query = "select * from order_table where delivery_agent_id = 1";
+			String query = "select * from order_table where delivery_agent_id = " + agentId + ";";
 			try {
 				Connection cn = super.getConnection();
 				Statement st = cn.createStatement();
@@ -66,10 +74,13 @@ public class EmployeeController extends ConnectionController {
 				while (rs.next()) {
 
 					Order o = new Order();
-					o.setCustomer(getCustomer());
 					o.setTrackingNumber(rs.getString("tracking_number"));
-					Timestamp ts = rs.getTimestamp("appointment_date");
+					o.setDeliverySignature(rs.getString("order_signature"));
 
+					int customerId = rs.getInt("customer_id");
+					o.setCustomer(getCustomer(customerId));
+
+					Timestamp ts = rs.getTimestamp("appointment_date");
 					// if date is not null
 					if (ts != null) {
 						o.setAppointmentDate(ts.toLocalDateTime());
@@ -80,30 +91,61 @@ public class EmployeeController extends ConnectionController {
 					if (ts != null) {
 						o.setDeliveryDate(ts.toLocalDateTime());
 					}
-					
-					//TODO: add set orderstatus once it is added to sql database
-					//o.setOrderStatus(rs.getString("order_status"));
-					
+
 					orderList.add(o);
 				}
 				return orderList;
 			} catch (Exception e) {
-				System.out.println("error " + count);
 				return orderList;
 			}
 		}
 	}
 
-	public Customer getCustomer() {
-		// TODO: implement this
-		return new Customer();
+	// given a customerId retrieve the corresponding customer from database
+	public Customer getCustomer(int customerId) {
+		String query = "SELECT * FROM dms.customer where customer_id = " + customerId + ";";
+		try {
+			Connection cn = super.getConnection();
+			Statement st = cn.createStatement();
+			ResultSet rs = st.executeQuery(query);
+			rs.next();
+
+			Customer c = new Customer();
+
+			c.setFirstName(rs.getString("customer_first_name"));
+			c.setLastName(rs.getString("customer_last_name"));
+			c.setEmail(rs.getString("customer_email"));
+			c.setStreetAddress(rs.getString("street_address"));
+			c.setCity(rs.getString("city"));
+			c.setState(rs.getString("state"));
+			c.setZip(rs.getString("zip"));
+			c.setPhone(rs.getString("phone_number"));
+
+			return c;
+
+		} catch (Exception e) {
+			return new Customer();
+		}
 	}
 
-	public boolean isLoggedIn() {
-		if (agentId == -1)
-			return false;
-		else
-			return true;
+	// given a string update the delivery signature. If true update the view
+	public boolean setDeliverySignature(String signature) {
+		return false;
+	}
+
+	// given a date, update the delivered date. if true update the view
+	public boolean setDeliveredDate(LocalDateTime date) {
+		return false;
+	}
+
+	// given a date, update the appointment date. if true update the view
+	public boolean reschedule(LocalDateTime date) {
+		return false;
+	}
+
+	// given a string update the orderStatus in database. if true update the view
+	public boolean setOrderStatus() {
+		return false;
 	}
 
 }

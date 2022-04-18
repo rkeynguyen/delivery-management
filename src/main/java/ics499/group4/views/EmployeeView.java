@@ -97,6 +97,7 @@ public class EmployeeView extends VerticalLayout {
 		Grid.Column<Order> deliveredColumn = grid.addColumn(Order::getDeliveryDate).setHeader("Delivery Date");
 		
 		trackingColumn.setAutoWidth(true);
+		nameColumn.setAutoWidth(true);
 		phoneColumn.setAutoWidth(true);
 		deliverySignitureColumn.setAutoWidth(true);
 		appointmentColumn.setWidth("18%");
