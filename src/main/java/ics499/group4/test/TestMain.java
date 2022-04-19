@@ -7,14 +7,9 @@ import ics499.group4.model.Order;
 public class TestMain {
 
 	public static void main(String[] args) {
-		EmployeeController.instanceOf().handleLoginRequest("john1", "test");
-		System.out.println("agent id = " + EmployeeController.instanceOf().getAgentId());
+		EmployeeController.instanceOf().handleLoginRequest("davis", "password1");
+		EmployeeController.instanceOf().setDeliverySignature("PHL462813", "test1");
 
-		ArrayList<Order> orders = EmployeeController.instanceOf().getOrders();
-		for (int i = 0; i < orders.size(); i++) {
-			System.out.println(orders.get(i).getTrackingNumber());
-			System.out.println(orders.get(i).getAppointmentDate() == null ? "null" : orders.get(i).getAppointmentDate().toString());
-		}
 	}
 
 }

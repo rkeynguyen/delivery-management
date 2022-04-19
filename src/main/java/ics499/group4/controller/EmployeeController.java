@@ -4,6 +4,7 @@ import ics499.group4.model.Customer;
 import ics499.group4.model.Order;
 import java.util.ArrayList;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -129,22 +130,31 @@ public class EmployeeController extends ConnectionController {
 	}
 
 	// given a string update the delivery signature. If true update the view
-	public boolean setDeliverySignature(String signature) {
-		return false;
+	public boolean setDeliverySignature(String tracking, String signature) {
+		String query = "UPDATE order_table SET order_signature = '"+ signature +"' WHERE tracking_number = '"+ tracking + "';";
+		try {
+			Connection cn = super.getConnection();
+			Statement st = cn.createStatement();
+			st.executeUpdate(query);
+			return true;
+		} catch (Exception e) {
+			System.err.println("exception!");
+			return false;
+		}
 	}
 
 	// given a date, update the delivered date. if true update the view
-	public boolean setDeliveredDate(LocalDateTime date) {
+	public boolean setDeliveredDate(String tracking, LocalDateTime date) {
 		return false;
 	}
 
 	// given a date, update the appointment date. if true update the view
-	public boolean reschedule(LocalDateTime date) {
+	public boolean reschedule(String tracking, LocalDateTime date) {
 		return false;
 	}
 
 	// given a string update the orderStatus in database. if true update the view
-	public boolean setOrderStatus() {
+	public boolean setOrderStatus(String tracking, String status) {
 		return false;
 	}
 

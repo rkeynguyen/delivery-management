@@ -28,6 +28,7 @@ public class EmployeeView extends VerticalLayout {
 	private Grid<Order> grid = new Grid<>(Order.class, false);
 	private TextField searchField = new TextField();
 	private Editor<Order> editor;
+	Order currentOrder;
 
 	public EmployeeView() {
 		setSizeFull();
@@ -36,16 +37,17 @@ public class EmployeeView extends VerticalLayout {
 		HorizontalLayout header = new HorizontalLayout();
 		Button title = new Button("Delivery Management System");
 		title.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
-		title.getStyle().set("font-size", "1.5em").set("margin", "0").set("color", "black").set("padding-right", "10px");
+		title.getStyle().set("font-size", "1.5em").set("margin", "0").set("color", "black").set("padding-right",
+				"10px");
 		title.addClickListener(e -> title.getUI().ifPresent(ui -> ui.navigate(HomePage.class)));
 		Button logout = new Button("Logout");
-		
-		//add logout function to controller
+
+		// add logout function to controller
 		logout.addClickListener(e -> {
 			EmployeeController.instanceOf().logout();
 			title.getUI().ifPresent(ui -> ui.navigate(HomePage.class));
-			});
-		
+		});
+
 		header.add(title, logout);
 
 		// setup and update the grid
@@ -73,9 +75,10 @@ public class EmployeeView extends VerticalLayout {
 			boolean matchesFirstName = order.getCustomer().getFirstName().toUpperCase().startsWith(searchTerm);
 			boolean matchesLastName = order.getCustomer().getLastName().toUpperCase().startsWith(searchTerm);
 			boolean matchesEmail = order.getCustomer().getEmail().toUpperCase().startsWith(searchTerm);
-			//boolean matchesPhone = order.getCustomer().getPhone().toUpperCase().startsWith(searchTerm);
+			// boolean matchesPhone =
+			// order.getCustomer().getPhone().toUpperCase().startsWith(searchTerm);
 
-			return matchesFirstName || matchesLastName || matchesTracking || matchesEmail; //matchesPhone 
+			return matchesFirstName || matchesLastName || matchesTracking || matchesEmail; // matchesPhone
 		});
 
 		add(header, searchField, grid);
@@ -83,39 +86,45 @@ public class EmployeeView extends VerticalLayout {
 
 	// Method to set up the grid
 	private void configureGrid() {
-		
 		editor = grid.getEditor();
-		
-		//adding columns
+
+		// adding columns
 		Grid.Column<Order> trackingColumn = grid.addColumn(Order::getTrackingNumber).setHeader("Tracking Number");
-		Grid.Column<Order> nameColumn = grid.addColumn(order -> order.getCustomer().getFirstName() + " " + order.getCustomer().getLastName()).setHeader("Name");
+		Grid.Column<Order> nameColumn = grid
+				.addColumn(order -> order.getCustomer().getFirstName() + " " + order.getCustomer().getLastName())
+				.setHeader("Name");
 		Grid.Column<Order> phoneColumn = grid.addColumn(order -> order.getCustomer().getPhone()).setHeader("Phone");
-		//Grid.Column<Order> emailColumn = grid.addColumn(order -> order.getCustomer().getEmail()).setHeader("Email");
+		// Grid.Column<Order> emailColumn = grid.addColumn(order ->
+		// order.getCustomer().getEmail()).setHeader("Email");
 		Grid.Column<Order> appointmentColumn = grid.addColumn(Order::getAppointmentDate).setHeader("Appointment Date");
-		Grid.Column<Order> deliverySignitureColumn = grid.addColumn(Order::getDeliverySignature).setHeader("Delivery Signature");
+		Grid.Column<Order> deliverySignitureColumn = grid.addColumn(Order::getDeliverySignature)
+				.setHeader("Delivery Signature");
 		Grid.Column<Order> statusColumn = grid.addColumn(Order::getOrderStatus).setHeader("Order Status");
 		Grid.Column<Order> deliveredColumn = grid.addColumn(Order::getDeliveryDate).setHeader("Delivery Date");
-		
+
 		trackingColumn.setAutoWidth(true);
 		nameColumn.setAutoWidth(true);
 		phoneColumn.setAutoWidth(true);
 		deliverySignitureColumn.setAutoWidth(true);
 		appointmentColumn.setWidth("18%");
 		deliveredColumn.setWidth("18%");
-		
-		//column for edit button and handling
-		Grid.Column<Order> editColumn = grid.addComponentColumn(person -> {
+
+		// column for edit button and handling
+		Grid.Column<Order> editColumn = grid.addComponentColumn(order -> {
 			Button editButton = new Button("Edit");
 			editButton.addClickListener(e -> {
-				if (editor.isOpen())
+				if (editor.isOpen()) {
+					currentOrder = null;
 					editor.cancel();
-				grid.getEditor().editItem(person);
-
+				}
+				// gives us current order instance
+				currentOrder = order;
+				grid.getEditor().editItem(order);
 			});
 			return editButton;
 		});
 
-		//adding editable textfields for columns, and buttons for editing
+		// adding editable textfields for columns, and buttons for editing
 		Binder<Order> binder = new Binder<>(Order.class);
 		editor.setBinder(binder);
 		editor.setBuffered(true);
@@ -130,26 +139,35 @@ public class EmployeeView extends VerticalLayout {
 		binder.forField(deliverySignitureField).bind(Order::getDeliverySignature, Order::setDeliverySignature);
 		deliverySignitureColumn.setEditorComponent(deliverySignitureField);
 
-		//order status drop down
-	    ComboBox<String> select = new ComboBox<>();	    
-		select.setItems("ATL", "OH","APC","APT","DAC","OFD","DEL","REF");
+		// order status drop down
+		ComboBox<String> select = new ComboBox<>();
+		select.setItems("ATL", "OH", "APC", "APT", "DAC", "OFD", "DEL", "REF");
 		binder.forField(select).bind(Order::getOrderStatus, Order::setOrderStatus);
 		statusColumn.setEditorComponent(select);
-		
-		
+
 		DateTimePicker deliveredField = new DateTimePicker();
 		deliveredField.setWidthFull();
 		binder.forField(deliveredField).bind(Order::getDeliveryDate, Order::setDeliveryDate);
 		deliveredColumn.setEditorComponent(deliveredField);
-		 
-		
-		Button saveButton = new Button("Save", e -> editor.save());
+
+		Button saveButton = new Button("Save", e -> {
+			editor.save();
+			updateDatabase();
+		});
 		Button cancelButton = new Button(VaadinIcon.CLOSE.create(), e -> editor.cancel());
 		cancelButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_ERROR);
 		HorizontalLayout actions = new HorizontalLayout(saveButton, cancelButton);
 		actions.setPadding(false);
 		editColumn.setEditorComponent(actions);
 		editColumn.setWidth("10%");
-		
+
+	}
+
+	// updates the database to match the grid
+	private void updateDatabase() {
+		EmployeeController.instanceOf().setDeliverySignature(currentOrder.getTrackingNumber(), currentOrder.getDeliverySignature());
+		EmployeeController.instanceOf().setDeliveredDate(currentOrder.getTrackingNumber(), currentOrder.getDeliveryDate());
+		EmployeeController.instanceOf().reschedule(currentOrder.getTrackingNumber(), currentOrder.getAppointmentDate());
+		EmployeeController.instanceOf().setOrderStatus(currentOrder.getTrackingNumber(), currentOrder.getOrderStatus());
 	}
 }
