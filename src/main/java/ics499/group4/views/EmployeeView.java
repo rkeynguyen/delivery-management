@@ -1,5 +1,8 @@
 package ics499.group4.views;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -29,6 +32,8 @@ public class EmployeeView extends VerticalLayout {
 	private TextField searchField = new TextField();
 	private Editor<Order> editor;
 	Order currentOrder;
+	boolean signature = false;
+	boolean deliveryDate = false;
 
 	public EmployeeView() {
 		setSizeFull();
@@ -131,12 +136,32 @@ public class EmployeeView extends VerticalLayout {
 
 		DateTimePicker appointmentField = new DateTimePicker();
 		appointmentField.setWidthFull();
-		binder.forField(appointmentField).bind(Order::getAppointmentDate, Order::setAppointmentDate);
+		// handle time constraints
+
+		// appointmentField.setMin(LocalDateTime.now());
+		binder.forField(appointmentField).withValidator(startDateTime -> {
+			LocalTime startTime = LocalTime.of(startDateTime.getHour(), startDateTime.getMinute());
+			boolean validTime = !(LocalTime.of(9, 0).isAfter(startTime) || (LocalTime.of(17, 0).isBefore(startTime)));
+			return validTime;
+		}, "The selected time is not available").bind(Order::getAppointmentDate, Order::setAppointmentDate);
 		appointmentColumn.setEditorComponent(appointmentField);
 
+		// signature field
 		TextField deliverySignitureField = new TextField();
 		deliverySignitureField.setWidthFull();
-		binder.forField(deliverySignitureField).bind(Order::getDeliverySignature, Order::setDeliverySignature);
+
+		// set it to delivered if there is a value
+		deliverySignitureField.addValueChangeListener(event -> {
+			signature = !event.getValue().isEmpty();
+		});
+
+		binder.forField(deliverySignitureField).withValidator(event -> {
+			// if the order is delivered then this is a required field
+			if (deliveryDate == false && signature == false) {
+				return true;
+			}
+			return signature;
+		}, "Delivered, set signature").bind(Order::getDeliverySignature, Order::setDeliverySignature);
 		deliverySignitureColumn.setEditorComponent(deliverySignitureField);
 
 		// order status drop down
@@ -147,10 +172,28 @@ public class EmployeeView extends VerticalLayout {
 
 		DateTimePicker deliveredField = new DateTimePicker();
 		deliveredField.setWidthFull();
-		binder.forField(deliveredField).bind(Order::getDeliveryDate, Order::setDeliveryDate);
+
+		// set as delivered
+		deliveredField.addValueChangeListener(event -> {
+			deliveryDate = event.getValue() != null;
+		});
+
+		binder.forField(deliveredField).withValidator(event -> {
+			// if the order is delivered then this is a required field
+			if (deliveryDate == false && signature == false) {
+				return true;
+			}
+			return deliveryDate;
+		}, "Delivered, set Date")
+
+				.bind(Order::getDeliveryDate, Order::setDeliveryDate);
 		deliveredColumn.setEditorComponent(deliveredField);
 
 		Button saveButton = new Button("Save", e -> {
+			//set status to delivered if delivery date and signature is set
+			if (deliveryDate && signature) {
+				select.setValue("DEL");
+			}
 			editor.save();
 			updateDatabase();
 		});
@@ -165,8 +208,10 @@ public class EmployeeView extends VerticalLayout {
 
 	// updates the database to match the grid
 	private void updateDatabase() {
-		EmployeeController.instanceOf().setDeliverySignature(currentOrder.getTrackingNumber(), currentOrder.getDeliverySignature());
-		EmployeeController.instanceOf().setDeliveredDate(currentOrder.getTrackingNumber(), currentOrder.getDeliveryDate());
+		EmployeeController.instanceOf().setDeliverySignature(currentOrder.getTrackingNumber(),
+				currentOrder.getDeliverySignature());
+		EmployeeController.instanceOf().setDeliveredDate(currentOrder.getTrackingNumber(),
+				currentOrder.getDeliveryDate());
 		EmployeeController.instanceOf().reschedule(currentOrder.getTrackingNumber(), currentOrder.getAppointmentDate());
 		EmployeeController.instanceOf().setOrderStatus(currentOrder.getTrackingNumber(), currentOrder.getOrderStatus());
 	}
