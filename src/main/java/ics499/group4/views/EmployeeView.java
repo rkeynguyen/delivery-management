@@ -136,8 +136,8 @@ public class EmployeeView extends VerticalLayout {
 
 		DateTimePicker appointmentField = new DateTimePicker();
 		appointmentField.setWidthFull();
+		
 		// handle time constraints
-
 		// appointmentField.setMin(LocalDateTime.now());
 		binder.forField(appointmentField).withValidator(startDateTime -> {
 			LocalTime startTime = LocalTime.of(startDateTime.getHour(), startDateTime.getMinute());

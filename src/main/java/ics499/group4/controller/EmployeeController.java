@@ -157,5 +157,10 @@ public class EmployeeController extends ConnectionController {
 	public boolean setOrderStatus(String tracking, String status) {
 		return false;
 	}
+	
+	//gets an order given a zip
+	public Order getOrder(String zip) {
+		return new Order();
+	}
 
 }
