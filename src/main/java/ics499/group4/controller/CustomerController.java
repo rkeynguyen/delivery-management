@@ -6,7 +6,7 @@ import ics499.group4.model.Order;
 
 public class CustomerController extends ConnectionController {
 	private static CustomerController instance = null;
-
+	private Order order;
 	private CustomerController() {
 
 	}
@@ -18,7 +18,7 @@ public class CustomerController extends ConnectionController {
 		return instance;
 	}
 
-	// delete an order in the database given a
+	// delete an order in the database using local order
 	public boolean deleteOrder() {
 		return false;
 	}
@@ -33,13 +33,14 @@ public class CustomerController extends ConnectionController {
 		return false;
 	}
 
+	//reschedules appointment date
 	public boolean reschedule(LocalDateTime date) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
+	//get order given tracking and zip , return null if order does not exist
 	public Order getOrder(String tracking, String zip) {
-		// TODO get order given tracking and zip , return null if order does not exist
+		// TODO assign order to local and return local instance
 		return new Order();
 
 	}
