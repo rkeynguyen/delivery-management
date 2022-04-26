@@ -39,8 +39,9 @@ public class CustomerController extends ConnectionController {
 	}
 
 	public Order getOrder(String tracking, String zip) {
-		// TODO get order given tracking and zip 
+		// TODO get order given tracking and zip , return null if order does not exist
 		return new Order();
+
 	}
 
 }

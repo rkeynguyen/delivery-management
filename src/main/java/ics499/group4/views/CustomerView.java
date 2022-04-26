@@ -34,7 +34,7 @@ public class CustomerView extends VerticalLayout {
 		Header header = new Header("Delivery Tracking");
 
 		// Tracking Label
-		H1 tracking = new H1("Track Packages");
+		H1 tracking = new H1("Track Package");
 
 		// setting up tracking
 		TextField trackingNumber = new TextField();
@@ -70,8 +70,13 @@ public class CustomerView extends VerticalLayout {
 
 		trackButton.getElement().addEventListener("click", event -> {
 			order = CustomerController.instanceOf().getOrder(trackingNumber.getValue(), zipCode.getValue());
-			trackingInfo.setValue("Tracking Number: " + trackingNumber.getValue());
-			deliveryInfo.setValue("Expected Delivery: " + order.getAppointmentDate());
+			//doesnt exist
+			if(order == null) {
+				tracking.setText("Order does not exist. Try again");
+			}else {
+				tracking.setText("Track Package");
+			trackingInfo.setValue(trackingNumber.getValue());
+			deliveryInfo.setValue(""+order.getAppointmentDate());
 			status.setValue(order.getOrderStatus());
 			trackingInfo.setVisible(true);
 			deliveryInfo.setVisible(true);
@@ -82,6 +87,7 @@ public class CustomerView extends VerticalLayout {
 			trackingNumber.setVisible(false);
 			zipCode.setVisible(false);
 			trackButton.setVisible(false);
+			}
 		});
 
 		// container for textfields
@@ -155,7 +161,7 @@ public class CustomerView extends VerticalLayout {
 			cancelButton.setVisible(true);
 			rescheduleButton.setVisible(true);
 			contactButton.setVisible(true);			
-			deliveryInfo.setValue("Expected Delivery: " + rescheduleField.getValue());
+			deliveryInfo.setValue("" + rescheduleField.getValue());
 			reschedule(rescheduleField.getValue());
 		});
 
