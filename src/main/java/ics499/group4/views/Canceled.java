@@ -11,7 +11,7 @@ public class Canceled extends VerticalLayout {
 	private static final long serialVersionUID = -9218051678695853157L;
 
 	public Canceled() {
-		
+		getStyle().set("background","url(images/delivery.png)");
 		setWidth("100%");
 		setHeight("100%");
 		setMargin(false);

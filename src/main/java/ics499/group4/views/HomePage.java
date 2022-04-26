@@ -11,6 +11,7 @@ public class HomePage extends VerticalLayout {
 	private static final long serialVersionUID = -9218051678695853157L;
 
 	public HomePage() {
+		getStyle().set("background","url(images/delivery.png)");
 		
 		setWidth("100%");
 		setHeight("100%");
