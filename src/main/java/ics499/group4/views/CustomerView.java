@@ -68,6 +68,7 @@ public class CustomerView extends VerticalLayout {
 		rescheduleButton.setVisible(false);
 		contactButton.setVisible(false);
 
+		//submit tracking form
 		trackButton.getElement().addEventListener("click", event -> {
 			order = CustomerController.instanceOf().getOrder(trackingNumber.getValue(), zipCode.getValue());
 			//doesnt exist
@@ -170,17 +171,11 @@ public class CustomerView extends VerticalLayout {
 			dialog.open();
 		});
 
+		//delete the order
 		dialogDelete.getElement().addEventListener("click", event -> {
 			deleteOrder();
-			trackingInfo.setVisible(false);
-			deliveryInfo.setVisible(false);
-			status.setVisible(false);
-			orderForm.setVisible(false);
-			cancelButton.setVisible(false);
-			rescheduleButton.setVisible(false);
-			contactButton.setVisible(false);
-			tracking.setText("Order Canceled");
 			dialog.close();
+			dialogDelete.getUI().ifPresent(ui -> ui.navigate(Canceled.class));
 		});
 
 		// container for buttons and input fields
@@ -192,7 +187,7 @@ public class CustomerView extends VerticalLayout {
 		HorizontalLayout trackingContent = new HorizontalLayout();
 		trackingContent.add(trackingInfo, deliveryInfo, status);
 		
-
+		//add all content to page
 		add(header,tracking, orderForm, trackingContent, buttons, new Footer());
 
 	}
