@@ -173,7 +173,7 @@ public class CustomerView extends VerticalLayout {
 
 		//delete the order
 		dialogDelete.getElement().addEventListener("click", event -> {
-			deleteOrder();
+			cancelOrder();
 			dialog.close();
 			dialogDelete.getUI().ifPresent(ui -> ui.navigate(Canceled.class));
 		});
@@ -193,8 +193,8 @@ public class CustomerView extends VerticalLayout {
 	}
 
 	//methods that manipulates the database
-	private void deleteOrder() {
-		CustomerController.instanceOf().deleteOrder();
+	private void cancelOrder() {
+		CustomerController.instanceOf().cancelOrder();
 	}
 
 	private void updateContact(String phone, String email) {

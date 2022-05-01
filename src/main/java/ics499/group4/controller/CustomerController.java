@@ -110,10 +110,10 @@ public class CustomerController extends ConnectionController {
 	}
 	
 	// reschedules appointment date
-	//incomplete
-	private boolean reschedule(LocalDateTime date) {
+	public boolean reschedule(LocalDateTime date) {
 		
 		//format "2022-04-20 09:00:00"
+		System.out.println(date);
 		String query = "UPDATE order_table SET appointment_date = '"+ date +"' WHERE tracking_number = '"+ order.getTrackingNumber() + "';";
 		try {
 			Connection cn = super.getConnection();
