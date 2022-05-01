@@ -432,6 +432,7 @@ customer_delivery_agent_id = []
 
 order_id = []
 order_tracking_number = []
+order_status = []
 order_appointment_date = []
 order_delivered_date = []
 order_signature = []
@@ -439,9 +440,12 @@ order_customer_id = []
 order_delivery_agent_id = []
 
 phone_area_codes = ["218", "320", "507", "612", "651", "763", "952"]
+status_codes = ["ALT", "OH", "APC", "APT", "DAC", "OFD", "DEL"]
 num_assigned_to_agents = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 tracking_number_prefixes = ["SEA", "LAX", "DFW", "MEM", "PHL", "CMH", "BOS", "MSP"]
-possible_appointment_dates = ["2022-04-18 09:00:00", "2022-04-18 13:00:00", "2022-04-19 09:00:00", "2022-04-19 13:00:00", "2022-04-20 09:00:00", "2022-04-20 13:00:00", "2022-04-21 09:00:00", "2022-04-21 13:00:00", "2022-04-22 09:00:00", "2022-04-22 13:00:00", "2022-04-25 09:00:00", "2022-04-25 13:00:00", "2022-04-26 09:00:00", "2022-04-26 13:00:00", "2022-04-27 09:00:00", "2022-04-27 13:00:00", "2022-04-28 09:00:00", "2022-04-28 13:00:00", "2022-04-29 09:00:00", "2022-04-29 13:00:00"]
+possible_delivered_appointment_dates = ["2022-04-18 09:00:00", "2022-04-18 13:00:00", "2022-04-19 09:00:00", "2022-04-19 13:00:00", "2022-04-20 09:00:00", "2022-04-20 13:00:00", "2022-04-21 09:00:00", "2022-04-21 13:00:00", "2022-04-22 09:00:00", "2022-04-22 13:00:00", "2022-04-25 09:00:00", "2022-04-25 13:00:00", "2022-04-26 09:00:00", "2022-04-26 13:00:00", "2022-04-27 09:00:00", "2022-04-27 13:00:00", "2022-04-28 09:00:00", "2022-04-28 13:00:00", "2022-04-29 09:00:00", "2022-04-29 13:00:00"]
+possible_ofd_times = ["2022-05-02 09:00:00", "2022-05-02 13:00:00"]
+possible_undelivered_appointment_dates = ["2022-05-03 09:00:00", "2022-05-03 13:00:00", "2022-05-04 09:00:00", "2022-05-04 13:00:00", "2022-05-05 09:00:00", "2022-05-05 13:00:00", "2022-05-06 09:00:00", "2022-05-02 13:00:00"]
 
 for x in range(0, 2000):
     customer_id.append(x + 1)
@@ -471,8 +475,9 @@ for x in range(0, 2000):
     while tracking in order_tracking_number:
         tracking = random.randrange(100000, 999999)
     order_tracking_number.append(random.choice(tracking_number_prefixes) + str(tracking))
-    order_appointment_date.append(random.choice(possible_appointment_dates))
-    if int(order_appointment_date[x][8:10]) < 25:
+    order_status.append(random.choice(status_codes))
+    if order_status[x] == "DEL":
+        order_appointment_date.append(random.choice(possible_delivered_appointment_dates))
         hourtime = random.randrange(8, 17)
         if hourtime < 10:
             hourtimestr = "0" + str(hourtime)
@@ -485,7 +490,16 @@ for x in range(0, 2000):
             minutetimestr = str(minutetime)
         order_delivered_date.append(order_appointment_date[x][0:11] + hourtimestr + ":" + minutetimestr + ":00")
         order_signature.append(customer_first_name[x] + " " + customer_last_name[x])
+    elif order_status[x] == "APT" or order_status[x] == "DAC" or (order_status[x] == "ALT" and (random.randrange(0, 1) > 0)) or (order_status[x] == "OH" and (random.randrange(0, 1) > 0)):
+        order_appointment_date.append(random.choice(possible_undelivered_appointment_dates))
+        order_delivered_date.append("")
+        order_signature.append("")
+    elif order_status[x] == "OFD":
+        order_appointment_date.append(random.choice(possible_ofd_times))
+        order_delivered_date.append("")
+        order_signature.append("")
     else:
+        order_appointment_date.append("")
         order_delivered_date.append("")
         order_signature.append("")
     order_customer_id.append(customer_id[x])
@@ -508,10 +522,12 @@ for x in range(0, len(customer_id)):
 f.write("\n")
 
 for x in range(0, len(order_id)):
-    if order_signature[x] == "":
-        f.write("insert into order_table (order_table_id, tracking_number, appointment_date, customer_id, delivery_agent_id)\nvalues (" + str(order_id[x]) + ", \"" + order_tracking_number[x] + "\", \"" + order_appointment_date[x] + "\", " + str(order_customer_id[x]) + ", " + str(order_delivery_agent_id[x]) + ");\n")
+    if order_appointment_date[x] == "":
+        f.write("insert into order_table (order_table_id, tracking_number, order_status, customer_id, delivery_agent_id)\nvalues (" + str(order_id[x]) + ", \"" + order_tracking_number[x] + "\", \"" + order_status[x] + "\", " + str(order_customer_id[x]) + ", " + str(order_delivery_agent_id[x]) + ");\n")
+    elif order_signature[x] == "":
+        f.write("insert into order_table (order_table_id, tracking_number, order_status, appointment_date, customer_id, delivery_agent_id)\nvalues (" + str(order_id[x]) + ", \"" + order_tracking_number[x] + "\", \"" + order_status[x] + "\", \"" + str(order_appointment_date[x]) + "\", " + str(order_customer_id[x]) + ", " + str(order_delivery_agent_id[x]) + ");\n")
     else:
-        f.write("insert into order_table (order_table_id, tracking_number, appointment_date, delivered_date, order_signature, customer_id, delivery_agent_id)\nvalues (" + str(order_id[x]) + ", \"" + order_tracking_number[x] + "\", \"" + order_appointment_date[x] + "\", \"" + order_delivered_date[x] + "\", \"" + order_signature[x] + "\", " + str(order_customer_id[x]) + ", " + str(order_delivery_agent_id[x]) + ");\n")
+        f.write("insert into order_table (order_table_id, tracking_number, order_status, appointment_date, delivered_date, order_signature, customer_id, delivery_agent_id)\nvalues (" + str(order_id[x]) + ", \"" + order_tracking_number[x] + "\", \"" + order_status[x] + "\", \"" + str(order_appointment_date[x]) + "\", \"" + order_delivered_date[x] + "\", \"" + order_signature[x] + "\", " + str(order_customer_id[x]) + ", " + str(order_delivery_agent_id[x]) + ");\n")
 
 f.write("\nSET SQL_SAFE_UPDATES = 1;")
 f.close()
