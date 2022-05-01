@@ -40,11 +40,6 @@ public class CustomerController extends ConnectionController {
 		return false;
 	}
 
-	// reschedules appointment date
-	public boolean reschedule(LocalDateTime date) {
-		return false;
-	}
-
 	// get order given tracking and zip , return null if order does not exist
 	public Order getOrder(String tracking, String zip) {
 		String query = "SELECT order_table.* , customer.zip FROM order_table join customer ON order_table.customer_id = customer.customer_id where tracking_number = '"+ tracking + "';";
@@ -114,6 +109,7 @@ public class CustomerController extends ConnectionController {
 		}
 	}
 	
+	// reschedules appointment date
 	//incomplete
 	private boolean reschedule(LocalDateTime date) {
 		
