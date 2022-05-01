@@ -32,35 +32,56 @@ public class CustomerController extends ConnectionController {
 
 	// updates phone number in database
 	public boolean setPhoneNumber(String phone) {
-		return false;
+		String query = "UPDATE customer_table SET phone_number = '" + phone + "' WHERE customer_id = '" + customerId
+				+ "';";
+		try {
+			Connection cn = super.getConnection();
+			Statement st = cn.createStatement();
+			st.executeUpdate(query);
+			return true;
+		} catch (Exception e) {
+			System.err.println("exception!");
+			return false;
+		}
 	}
 
 	// updates phone number in database
 	public boolean setEmail(String email) {
-		return false;
+		String query = "UPDATE customer_table SET customer_email = '" + email + "' WHERE customer_id = '" + customerId
+				+ "';";
+		try {
+			Connection cn = super.getConnection();
+			Statement st = cn.createStatement();
+			st.executeUpdate(query);
+			return true;
+		} catch (Exception e) {
+			System.err.println("exception!");
+			return false;
+		}
 	}
 
 	// get order given tracking and zip , return null if order does not exist
 	public Order getOrder(String tracking, String zip) {
-		String query = "SELECT order_table.* , customer.zip FROM order_table join customer ON order_table.customer_id = customer.customer_id where tracking_number = '"+ tracking + "';";
-		
+		String query = "SELECT order_table.* , customer.zip FROM order_table join customer ON order_table.customer_id = customer.customer_id where tracking_number = '"
+				+ tracking + "';";
+
 		try {
 			Connection cn = super.getConnection();
 			Statement st = cn.createStatement();
 			ResultSet rs = st.executeQuery(query);
 			rs.next();
-			
-			//if the zip does not match then this is not the right order
-			if(!rs.getString("zip").equals(zip)) {
+
+			// if the zip does not match then this is not the right order
+			if (!rs.getString("zip").equals(zip)) {
 				return null;
 			}
-			
-			//create order			
+
+			// create order
 			customerId = rs.getInt("customer_id");
-			order.setCustomer(getCustomer(customerId));		
-			
+			order.setCustomer(getCustomer(customerId));
+
 			order.setTrackingNumber(rs.getString("tracking_number"));
-			order.setDeliverySignature(rs.getString("order_signature"));			
+			order.setDeliverySignature(rs.getString("order_signature"));
 
 			Timestamp ts = rs.getTimestamp("appointment_date");
 			// if date is not null
@@ -73,7 +94,7 @@ public class CustomerController extends ConnectionController {
 			if (ts != null) {
 				order.setDeliveryDate(ts.toLocalDateTime());
 			}
-			
+
 			return order;
 		} catch (Exception e) {
 			System.err.println("sql error");
@@ -108,13 +129,14 @@ public class CustomerController extends ConnectionController {
 			return new Customer();
 		}
 	}
-	
+
 	// reschedules appointment date
-	//incomplete
+	// incomplete
 	private boolean reschedule(LocalDateTime date) {
-		
-		//format "2022-04-20 09:00:00"
-		String query = "UPDATE order_table SET appointment_date = '"+ date +"' WHERE tracking_number = '"+ order.getTrackingNumber() + "';";
+
+		// format "2022-04-20 09:00:00"
+		String query = "UPDATE order_table SET appointment_date = '" + date + "' WHERE tracking_number = '"
+				+ order.getTrackingNumber() + "';";
 		try {
 			Connection cn = super.getConnection();
 			Statement st = cn.createStatement();
@@ -125,7 +147,5 @@ public class CustomerController extends ConnectionController {
 			return false;
 		}
 	}
-	
-
 
 }
