@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import ics499.group4.model.Customer;
 import ics499.group4.model.Order;
@@ -62,24 +63,23 @@ public class CustomerController extends ConnectionController {
 
 	// get order given tracking and zip , return null if order does not exist
 	public Order getOrder(String tracking, String zip) {
-		String query = "SELECT order_table.* , customer.zip FROM order_table join customer ON order_table.customer_id = customer.customer_id where tracking_number = '"
-				+ tracking + "';";
-
+		String query = "SELECT order_table.* , customer.zip FROM order_table join customer ON order_table.customer_id = customer.customer_id where tracking_number = '"+ tracking +"';";
+		order = new Order();
+		
 		try {
 			Connection cn = super.getConnection();
 			Statement st = cn.createStatement();
 			ResultSet rs = st.executeQuery(query);
 			rs.next();
-
+			
 			// if the zip does not match then this is not the right order
 			if (!rs.getString("zip").equals(zip)) {
 				return null;
 			}
-
+			
 			// create order
 			customerId = rs.getInt("customer_id");
-			order.setCustomer(getCustomer(customerId));
-
+			order.setCustomer(getCustomer(customerId));			
 			order.setTrackingNumber(rs.getString("tracking_number"));
 			order.setDeliverySignature(rs.getString("order_signature"));
 
@@ -131,10 +131,11 @@ public class CustomerController extends ConnectionController {
 	}
 
 	// reschedules appointment date
-	public boolean reschedule(LocalDateTime date) {
-
+	public boolean reschedule(LocalDateTime date) {	
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
+		String formatDateTime = date.format(format);  
 		// format "2022-04-20 09:00:00"
-		String query = "UPDATE order_table SET appointment_date = '" + date + "' WHERE tracking_number = '"
+		String query = "UPDATE order_table SET appointment_date = '" + formatDateTime + "' WHERE tracking_number = '"
 				+ order.getTrackingNumber() + "';";
 		try {
 			Connection cn = super.getConnection();
