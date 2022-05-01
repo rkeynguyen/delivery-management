@@ -3,6 +3,7 @@ package ics499.group4.controller;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import ics499.group4.model.Customer;
@@ -11,6 +12,7 @@ import ics499.group4.model.Order;
 public class CustomerController extends ConnectionController {
 	private static CustomerController instance = null;
 	private Order order;
+	private int customerId;
 
 	private CustomerController() {
 
@@ -23,8 +25,8 @@ public class CustomerController extends ConnectionController {
 		return instance;
 	}
 
-	// delete an order in the database using local order
-	public boolean deleteOrder() {
+	// set order as canceled
+	public boolean cancelOrder() {
 		return false;
 	}
 
@@ -45,8 +47,43 @@ public class CustomerController extends ConnectionController {
 
 	// get order given tracking and zip , return null if order does not exist
 	public Order getOrder(String tracking, String zip) {
-		// TODO assign order to local and return local instance
-		return new Order();
+		String query = "SELECT order_table.* , customer.zip FROM order_table join customer ON order_table.customer_id = customer.customer_id where tracking_number = '"+ tracking + "';";
+		
+		try {
+			Connection cn = super.getConnection();
+			Statement st = cn.createStatement();
+			ResultSet rs = st.executeQuery(query);
+			rs.next();
+			
+			//if the zip does not match then this is not the right order
+			if(!rs.getString("zip").equals(zip)) {
+				return null;
+			}
+			
+			//create order			
+			customerId = rs.getInt("customer_id");
+			order.setCustomer(getCustomer(customerId));		
+			
+			order.setTrackingNumber(rs.getString("tracking_number"));
+			order.setDeliverySignature(rs.getString("order_signature"));			
+
+			Timestamp ts = rs.getTimestamp("appointment_date");
+			// if date is not null
+			if (ts != null) {
+				order.setAppointmentDate(ts.toLocalDateTime());
+			}
+
+			// if date is not null
+			ts = rs.getTimestamp("delivered_date");
+			if (ts != null) {
+				order.setDeliveryDate(ts.toLocalDateTime());
+			}
+			
+			return order;
+		} catch (Exception e) {
+			System.err.println("sql error");
+			return null;
+		}
 
 	}
 
@@ -76,5 +113,23 @@ public class CustomerController extends ConnectionController {
 			return new Customer();
 		}
 	}
+	
+	//incomplete
+	private boolean reschedule(LocalDateTime date) {
+		
+		//format "2022-04-20 09:00:00"
+		String query = "UPDATE order_table SET appointment_date = '"+ date +"' WHERE tracking_number = '"+ order.getTrackingNumber() + "';";
+		try {
+			Connection cn = super.getConnection();
+			Statement st = cn.createStatement();
+			st.executeUpdate(query);
+			return true;
+		} catch (Exception e) {
+			System.err.println("exception!");
+			return false;
+		}
+	}
+	
+
 
 }
