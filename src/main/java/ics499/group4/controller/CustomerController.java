@@ -28,7 +28,16 @@ public class CustomerController extends ConnectionController {
 
 	// set order as canceled
 	public boolean cancelOrder() {
-		return false;
+		String query = "UPDATE order_table SET order_status = 'REF' WHERE tracking_number = '" + order.getTrackingNumber() + "';";
+		try {
+			Connection cn = super.getConnection();
+			Statement st = cn.createStatement();
+			st.executeUpdate(query);
+			return true;
+		} catch (Exception e) {
+			System.err.println("exception!");
+			return false;
+		}
 	}
 
 	// updates phone number in database
@@ -134,7 +143,6 @@ public class CustomerController extends ConnectionController {
 	public boolean reschedule(LocalDateTime date) {	
 		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
 		String formatDateTime = date.format(format);  
-		// format "2022-04-20 09:00:00"
 		String query = "UPDATE order_table SET appointment_date = '" + formatDateTime + "' WHERE tracking_number = '"
 				+ order.getTrackingNumber() + "';";
 		try {

@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import ics499.group4.model.Customer;
@@ -146,7 +147,9 @@ public class EmployeeController extends ConnectionController {
 
 	// given a date, update the delivered date. if true update the view
 	public boolean setDeliveredDate(String tracking, LocalDateTime date) {
-		String query = "UPDATE order_table SET delivered_date = '" + date + "' WHERE tracking_number = '" + tracking
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
+		String formatDateTime = date.format(format);  
+		String query = "UPDATE order_table SET delivered_date = '" + formatDateTime + "' WHERE tracking_number = '" + tracking
 				+ "';";
 		try {
 			Connection cn = super.getConnection();
@@ -161,7 +164,9 @@ public class EmployeeController extends ConnectionController {
 
 	// given a date, update the appointment date. if true update the view
 	public boolean reschedule(String tracking, LocalDateTime date) {
-		String query = "UPDATE order_table SET appointment_date = '" + date + "' WHERE tracking_number = '" + tracking
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
+		String formatDateTime = date.format(format);  
+		String query = "UPDATE order_table SET appointment_date = '" + formatDateTime + "' WHERE tracking_number = '" + tracking
 				+ "';";
 		try {
 			Connection cn = super.getConnection();
