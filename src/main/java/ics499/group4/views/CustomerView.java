@@ -24,7 +24,7 @@ import ics499.group4.model.Order;
 public class CustomerView extends VerticalLayout {
 	private static final long serialVersionUID = -9218051678695853157L;
 	Order order;
-	
+
 	public CustomerView() {
 		setSizeFull();
 		setPadding(false);
@@ -43,12 +43,11 @@ public class CustomerView extends VerticalLayout {
 		zipCode.setLabel("ZIP code");
 		Button trackButton = new Button("Track");
 
-		
 		// show order info if button is clicked
 		TextField trackingInfo = new TextField();
 		trackingInfo.setReadOnly(true);
 		trackingInfo.setLabel("Tracking");
-		
+
 		TextField deliveryInfo = new TextField();
 		deliveryInfo.setReadOnly(true);
 		deliveryInfo.setLabel("Delivery");
@@ -68,26 +67,44 @@ public class CustomerView extends VerticalLayout {
 		rescheduleButton.setVisible(false);
 		contactButton.setVisible(false);
 
-		//submit tracking form
+		// submit tracking form
 		trackButton.getElement().addEventListener("click", event -> {
 			order = CustomerController.instanceOf().getOrder(trackingNumber.getValue(), zipCode.getValue());
-			//doesnt exist
-			if(order == null) {
+			// doesnt exist
+			if (order == null) {
 				tracking.setText("Order does not exist. Try again");
-			}else {
-				tracking.setText("Track Package");
-			trackingInfo.setValue(trackingNumber.getValue());
-			deliveryInfo.setValue(""+order.getAppointmentDate());
-			status.setValue(order.getOrderStatus());
-			trackingInfo.setVisible(true);
-			deliveryInfo.setVisible(true);
-			status.setVisible(true);
-			cancelButton.setVisible(true);
-			rescheduleButton.setVisible(true);
-			contactButton.setVisible(true);
-			trackingNumber.setVisible(false);
-			zipCode.setVisible(false);
-			trackButton.setVisible(false);
+			} else {
+				trackingInfo.setValue(trackingNumber.getValue());
+				deliveryInfo.setValue("" + order.getAppointmentDate());
+				status.setValue(order.getOrderStatus());
+				String statusMsg = status.getValue();
+				if(statusMsg.startsWith("ALT")){
+					tracking.setText("ALT - waiting recovery");
+				}else if(statusMsg.startsWith("OH")){
+					tracking.setText("OH - on hand");
+				}else if(statusMsg.startsWith("APC")){
+					tracking.setText("APC - call no contact");
+				}else if(statusMsg.startsWith("DAC")){
+					tracking.setText("DAC - delivery agent appointment confirmed");
+				}else if(statusMsg.startsWith("OFD")){
+					tracking.setText("OFD - out for delivery");
+				}else if(statusMsg.startsWith("DEL")){
+					tracking.setText("DEL - delivered");
+				}else if(statusMsg.startsWith("REF")){
+					tracking.setText("REF - refused/cancelled");
+				}else {
+					tracking.setText("Track Package");
+				}
+
+				trackingInfo.setVisible(true);
+				deliveryInfo.setVisible(true);
+				status.setVisible(true);
+				cancelButton.setVisible(true);
+				rescheduleButton.setVisible(true);
+				contactButton.setVisible(true);
+				trackingNumber.setVisible(false);
+				zipCode.setVisible(false);
+				trackButton.setVisible(false);
 			}
 		});
 
@@ -161,8 +178,8 @@ public class CustomerView extends VerticalLayout {
 			emailField.setVisible(false);
 			cancelButton.setVisible(true);
 			rescheduleButton.setVisible(true);
-			contactButton.setVisible(true);		
-			if(rescheduleField.getValue() != null) {
+			contactButton.setVisible(true);
+			if (rescheduleField.getValue() != null) {
 				deliveryInfo.setValue("" + rescheduleField.getValue());
 				reschedule(rescheduleField.getValue());
 			}
@@ -173,7 +190,7 @@ public class CustomerView extends VerticalLayout {
 			dialog.open();
 		});
 
-		//delete the order
+		// delete the order
 		dialogDelete.getElement().addEventListener("click", event -> {
 			cancelOrder();
 			dialog.close();
@@ -188,13 +205,13 @@ public class CustomerView extends VerticalLayout {
 		// Container for order info
 		HorizontalLayout trackingContent = new HorizontalLayout();
 		trackingContent.add(trackingInfo, deliveryInfo, status);
-		
-		//add all content to page
-		add(header,tracking, orderForm, trackingContent, buttons, new Footer());
+
+		// add all content to page
+		add(header, tracking, orderForm, trackingContent, buttons, new Footer());
 
 	}
 
-	//methods that manipulates the database
+	// methods that manipulates the database
 	private void cancelOrder() {
 		CustomerController.instanceOf().cancelOrder();
 	}
@@ -203,7 +220,7 @@ public class CustomerView extends VerticalLayout {
 		CustomerController.instanceOf().setPhoneNumber(phone);
 		CustomerController.instanceOf().setEmail(email);
 	}
-	
+
 	private void reschedule(LocalDateTime date) {
 		CustomerController.instanceOf().reschedule(date);
 	}

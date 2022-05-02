@@ -98,7 +98,7 @@ public class CustomerController extends ConnectionController {
 			order.setCustomer(getCustomer(customerId));			
 			order.setTrackingNumber(rs.getString("tracking_number"));
 			order.setDeliverySignature(rs.getString("order_signature"));
-
+			order.setOrderStatus(rs.getString("order_status"));
 			Timestamp ts = rs.getTimestamp("appointment_date");
 			// if date is not null
 			if (ts != null) {
