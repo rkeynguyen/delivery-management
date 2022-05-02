@@ -42,6 +42,10 @@ public class CustomerController extends ConnectionController {
 
 	// updates phone number in database
 	public boolean setPhoneNumber(String phone) {
+		if(phone == null || phone.isBlank()) {
+			return false;
+		}
+		
 		String query = "UPDATE customer_table SET phone_number = '" + phone + "' WHERE customer_id = '" + customerId
 				+ "';";
 		try {
@@ -57,6 +61,9 @@ public class CustomerController extends ConnectionController {
 
 	// updates phone number in database
 	public boolean setEmail(String email) {
+		if(email == null || email.isBlank()) {
+			return false;
+		}
 		String query = "UPDATE customer_table SET customer_email = '" + email + "' WHERE customer_id = '" + customerId
 				+ "';";
 		try {
@@ -140,6 +147,10 @@ public class CustomerController extends ConnectionController {
 
 	// reschedules appointment date
 	public boolean reschedule(LocalDateTime date) {	
+		if(date == null) {
+			return false;
+		}
+		
 		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
 		String formatDateTime = date.format(format);  
 		String query = "UPDATE order_table SET appointment_date = '" + formatDateTime + "' WHERE tracking_number = '"
