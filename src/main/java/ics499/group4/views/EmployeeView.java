@@ -1,8 +1,5 @@
 package ics499.group4.views;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -19,9 +16,10 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-
 import ics499.group4.controller.EmployeeController;
 import ics499.group4.model.Order;
+
+import java.time.LocalTime;
 
 @PageTitle("Orders")
 @Route(value = "orders")
@@ -166,7 +164,7 @@ public class EmployeeView extends VerticalLayout {
 
 		// order status drop down
 		ComboBox<String> select = new ComboBox<>();
-		select.setItems("ATL", "OH", "APC", "APT", "DAC", "OFD", "DEL", "REF");
+		select.setItems("ATL", "OH", "APC", "APT", "DAC", "OFD", "DEL", "REF", "DLY");
 		binder.forField(select).bind(Order::getOrderStatus, Order::setOrderStatus);
 		statusColumn.setEditorComponent(select);
 
