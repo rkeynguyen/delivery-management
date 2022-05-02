@@ -161,9 +161,11 @@ public class CustomerView extends VerticalLayout {
 			emailField.setVisible(false);
 			cancelButton.setVisible(true);
 			rescheduleButton.setVisible(true);
-			contactButton.setVisible(true);			
-			deliveryInfo.setValue("" + rescheduleField.getValue());
-			reschedule(rescheduleField.getValue());
+			contactButton.setVisible(true);		
+			if(rescheduleField.getValue() != null) {
+				deliveryInfo.setValue("" + rescheduleField.getValue());
+				reschedule(rescheduleField.getValue());
+			}
 		});
 
 		// Canceling order
