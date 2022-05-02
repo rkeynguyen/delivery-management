@@ -81,7 +81,8 @@ public class EmployeeController extends ConnectionController {
 
 					int customerId = rs.getInt("customer_id");
 					o.setCustomer(getCustomer(customerId));
-
+					o.setOrderStatus(rs.getString("order_status"));
+					
 					Timestamp ts = rs.getTimestamp("appointment_date");
 					// if date is not null
 					if (ts != null) {
@@ -147,6 +148,9 @@ public class EmployeeController extends ConnectionController {
 
 	// given a date, update the delivered date. if true update the view
 	public boolean setDeliveredDate(String tracking, LocalDateTime date) {
+		if(date == null) {
+			return false;
+		}
 		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
 		String formatDateTime = date.format(format);  
 		String query = "UPDATE order_table SET delivered_date = '" + formatDateTime + "' WHERE tracking_number = '" + tracking
@@ -164,6 +168,9 @@ public class EmployeeController extends ConnectionController {
 
 	// given a date, update the appointment date. if true update the view
 	public boolean reschedule(String tracking, LocalDateTime date) {
+		if(date == null) {
+			return false;
+		}
 		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
 		String formatDateTime = date.format(format);  
 		String query = "UPDATE order_table SET appointment_date = '" + formatDateTime + "' WHERE tracking_number = '" + tracking

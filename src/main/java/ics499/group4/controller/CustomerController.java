@@ -109,7 +109,6 @@ public class CustomerController extends ConnectionController {
 			System.err.println("sql error");
 			return null;
 		}
-
 	}
 
 	// given a customerId retrieve the corresponding customer from database
