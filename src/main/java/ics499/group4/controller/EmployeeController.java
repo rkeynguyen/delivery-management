@@ -3,10 +3,6 @@ package ics499.group4.controller;
 import ics499.group4.model.Customer;
 import ics499.group4.model.Order;
 
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -14,7 +10,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Properties;
 
 public class EmployeeController extends ConnectionController {
 	private ArrayList<Order> orderList;
@@ -193,13 +188,6 @@ public class EmployeeController extends ConnectionController {
 
 	// given a string update the orderStatus in database. if true update the view
 	public boolean setOrderStatus(String tracking, String status) {
-		if(status.equals("DLY")) {
-			try {
-				sendEmail(tracking);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
 		String query = "UPDATE order_table SET order_status = '" + status + "' WHERE tracking_number = '" + tracking
 				+ "';";
 		try {
@@ -210,38 +198,6 @@ public class EmployeeController extends ConnectionController {
 		} catch (Exception e) {
 			System.err.println("exception!");
 			return false;
-		}
-	}
-
-	private void sendEmail(String tracking) throws IOException {
-		Properties props = new Properties();
-		props.put("mail.smtp.auth", "true");
-		props.put("mail.smtp.starttls.enable", "true");
-		props.put("mail.smtp.host", "outlook.office365.com");
-		props.put("mail.smtp.port", "587");
-
-		Session session = Session.getInstance(props,
-				new Authenticator() {
-					protected PasswordAuthentication getPasswordAuthentication() {
-						return new PasswordAuthentication("er2555pg@go.minnstate.edu", "elpvenhythES*>");
-					}
-				});
-
-		try {
-
-			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("seth.prokop@go.minneapolis.edu"));
-			message.setRecipients(Message.RecipientType.TO,
-					InternetAddress.parse("seth.prokop@go.minneapolis.edu"));
-			message.setSubject("Test");
-			message.setText(tracking);
-
-			Transport.send(message);
-
-			System.out.println("Done");
-
-		} catch (MessagingException e) {
-			throw new RuntimeException(e);
 		}
 	}
 }
